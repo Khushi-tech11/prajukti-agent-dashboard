@@ -1,0 +1,295 @@
+@import "tailwindcss";
+@import "@vue-flow/core/dist/style.css";
+@import "@vue-flow/core/dist/theme-default.css";
+@import "@vue-flow/minimap/dist/style.css";
+@import "@vue-flow/controls/dist/style.css";
+
+@theme inline {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+:root {
+  /* Zinc/Slate Dark Theme */
+  --background: 240 6% 7%;
+  --foreground: 210 20% 95%;
+  --card: 240 5% 10%;
+  --card-foreground: 210 20% 95%;
+  --popover: 240 5% 12%;
+  --popover-foreground: 210 20% 95%;
+  --primary: 158 64% 52%;
+  --primary-foreground: 240 6% 7%;
+  --secondary: 240 4% 16%;
+  --secondary-foreground: 210 20% 95%;
+  --muted: 240 4% 20%;
+  --muted-foreground: 215 14% 55%;
+  --accent: 158 64% 52%;
+  --accent-foreground: 240 6% 7%;
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 210 20% 95%;
+  --border: 240 4% 18%;
+  --input: 240 4% 16%;
+  --ring: 158 64% 52%;
+  --radius: 0.5rem;
+  
+  /* Status Colors */
+  --success: 158 64% 52%;
+  --warning: 38 92% 50%;
+  --info: 217 91% 60%;
+  --running: 38 92% 50%;
+  --pending: 38 72% 45%;
+  --active: 158 64% 52%;
+  --error: 0 62% 50%;
+}
+
+*,
+*::before,
+*::after {
+  border-color: hsl(var(--border));
+  box-sizing: border-box;
+}
+
+html {
+  background: hsl(var(--background));
+  color-scheme: dark;
+}
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Prevent white flash on load */
+html, body, #app {
+  background-color: hsl(var(--background));
+}
+
+/* Reset any default white backgrounds */
+button, input, textarea {
+  background-color: transparent;
+  color: inherit;
+}
+
+/* Style select elements properly */
+select {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+select option {
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Selection */
+::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--foreground));
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Vue Flow Custom Styles */
+.vue-flow {
+  background: hsl(var(--background));
+}
+
+.vue-flow__minimap {
+  background: hsl(var(--card));
+  border-radius: 8px;
+  border: 1px solid hsl(var(--border));
+}
+
+.vue-flow__controls {
+  background: hsl(var(--card));
+  border-radius: 8px;
+  border: 1px solid hsl(var(--border));
+}
+
+.vue-flow__controls-button {
+  background: hsl(var(--card));
+  border: none;
+  color: hsl(var(--foreground));
+}
+
+.vue-flow__controls-button:hover {
+  background: hsl(var(--secondary));
+}
+
+.vue-flow__edge-path {
+  stroke: hsl(var(--muted-foreground));
+  stroke-width: 2;
+}
+
+.vue-flow__edge.selected .vue-flow__edge-path,
+.vue-flow__edge:hover .vue-flow__edge-path {
+  stroke: hsl(var(--primary));
+}
+
+/* Code block styling */
+.code-block {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  background: hsl(240 6% 6%);
+  border-radius: 6px;
+  padding: 12px;
+  overflow-x: auto;
+}
+
+.code-block .key {
+  color: hsl(var(--info));
+}
+
+.code-block .string {
+  color: hsl(158 64% 62%);
+}
+
+.code-block .number {
+  color: hsl(38 92% 60%);
+}
+
+.code-block .boolean {
+  color: hsl(280 68% 60%);
+}
+
+/* Terminal styling */
+.terminal {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  background: hsl(240 6% 5%);
+  color: hsl(var(--muted-foreground));
+}
+
+.terminal .prompt {
+  color: hsl(var(--primary));
+}
+
+.terminal .timestamp {
+  color: hsl(var(--muted-foreground) / 0.6);
+}
+
+/* Animations */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+.animate-slide-out {
+  animation: slide-out-right 0.3s ease-out forwards;
+}
+
+/* Status indicators */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.active {
+  background: hsl(var(--active));
+  box-shadow: 0 0 8px hsl(var(--active) / 0.5);
+}
+
+.status-dot.running {
+  background: hsl(var(--running));
+  animation: pulse 1.5s infinite;
+}
+
+.status-dot.pending {
+  background: hsl(var(--pending));
+}
+
+.status-dot.error {
+  background: hsl(var(--error));
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Node port styles */
+.node-port {
+  width: 12px;
+  height: 12px;
+  background: hsl(var(--muted));
+  border: 2px solid hsl(var(--border));
+  border-radius: 50%;
+  transition: all 0.15s ease;
+}
+
+.node-port:hover {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  transform: scale(1.2);
+}
+
+.node-port.connected {
+  background: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+}
