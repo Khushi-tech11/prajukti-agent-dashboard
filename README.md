@@ -236,9 +236,9 @@ VITE_API_BASE_URL=http://localhost:8000
 | Role | Name |
 |---|---|
 | **Team Leader** | Khushi Agarwal |
-| **Member** | — |
-| **Member** | — |
-| **Member** | — |
+| **Member** | Rishav Kumar Singh |
+| **Member** | Adit Agarwal |
+
 
 **Institution:** Girijananda Chowdhury University
 **Hackathon:** GCU Hackathon — Track PS-A01
