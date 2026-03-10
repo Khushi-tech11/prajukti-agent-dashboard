@@ -237,7 +237,7 @@ VITE_API_BASE_URL=http://localhost:8000
 |---|---|
 | **Team Leader** | Khushi Agarwal |
 | **Member** | Rishav Kumar Singh |
-| **Member** | Adit Agarwal |
+| **Member** | Aditi Agarwal |
 
 
 **Institution:** Girijananda Chowdhury University
