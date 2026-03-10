@@ -82,6 +82,16 @@ const proFeatures = [
 
 // computed is imported automatically in <script setup> but we need the import
 import { computed } from 'vue'
+
+function handleManageBilling() {
+  showProModal.value = false
+  // Navigate to settings/billing or open billing portal
+}
+
+function handleUpgradeEnterprise() {
+  showProModal.value = false
+  // Show upgrade modal or navigate to enterprise page
+}
 </script>
 
 <template>
@@ -119,10 +129,11 @@ import { computed } from 'vue'
       <!-- Pro badge -->
       <button
         @click="showProModal = true"
-        class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[hsl(var(--secondary))] border border-[hsl(var(--border))] rounded-md hover:bg-[hsl(var(--secondary))] transition-colors cursor-pointer"
+        class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[hsl(var(--secondary))] border border-[hsl(var(--border))] rounded-md hover:bg-[hsl(var(--secondary)/0.8)] transition-colors cursor-pointer group"
       >
         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-        <span class="text-xs font-mono text-[hsl(var(--foreground))] font-medium">PRO</span>
+        <span class="text-xs font-mono text-[hsl(var(--foreground))] font-medium group-hover:text-emerald-500 transition-colors">PRO</span>
+        <span class="hidden sm:inline text-xs text-[hsl(var(--muted-foreground))]">₹3,999/mo</span>
       </button>
 
       <!-- ── Bell / Notifications ── -->
@@ -324,7 +335,7 @@ import { computed } from 'vue'
               <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full">Active</span>
             </div>
             <div class="flex items-baseline gap-1 mb-2">
-              <span class="text-3xl font-bold text-[hsl(var(--foreground))]">$39.99</span>
+              <span class="text-3xl font-bold text-[hsl(var(--foreground))]">₹3,999</span>
               <span class="text-[hsl(var(--muted-foreground))]">/month</span>
             </div>
             <p class="text-sm text-[hsl(var(--muted-foreground))]">Billed monthly. Next billing date: April 15, 2026</p>
@@ -375,14 +386,14 @@ import { computed } from 'vue'
 
           <div class="flex gap-3">
             <button
-              @click="showProModal = false"
-              class="flex-1 px-4 py-2.5 border border-[hsl(var(--border))] rounded-lg text-sm font-medium text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))] transition-colors"
+              @click="handleManageBilling"
+              class="flex-1 px-4 py-2.5 border border-[hsl(var(--border))] rounded-lg text-sm font-medium text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))] transition-colors cursor-pointer"
             >
               Manage Billing
             </button>
             <button
-              @click="showProModal = false"
-              class="flex-1 px-4 py-2.5 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg text-sm font-medium hover:opacity-90 transition-colors"
+              @click="handleUpgradeEnterprise"
+              class="flex-1 px-4 py-2.5 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg text-sm font-medium hover:opacity-90 transition-colors cursor-pointer"
             >
               Upgrade to Enterprise
             </button>

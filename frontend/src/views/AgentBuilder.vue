@@ -15,7 +15,8 @@ import {
   Calculator,
   Mail,
   ListTodo,
-  GripVertical
+  GripVertical,
+  Check
 } from 'lucide-vue-next'
 
 interface Agent {
@@ -177,17 +178,16 @@ const getRoleIcon = (role: string) => {
               <p class="text-sm text-[hsl(var(--muted-foreground))]">{{ agent.role }}</p>
             </div>
           </div>
-          <button
-            @click="toggleStatus(agent)"
+          <div
             :class="[
-              'rounded-full px-2.5 py-1 text-xs font-medium transition-colors',
+              'rounded-full px-2.5 py-1 text-xs font-medium',
               agent.status === 'active' 
                 ? 'bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))]' 
                 : 'bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]'
             ]"
           >
             {{ agent.status }}
-          </button>
+          </div>
         </div>
 
         <div class="mt-4 space-y-3">

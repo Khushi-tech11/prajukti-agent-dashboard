@@ -3,16 +3,10 @@
     <!-- Header -->
     <div class="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))] flex-shrink-0">
       <div class="flex items-center gap-4">
-        <GlobalContextIndicator />
-        <div class="h-4 w-px bg-[hsl(var(--border))]" />
         <div>
           <h1 class="text-sm font-semibold text-[hsl(var(--foreground))] tracking-wide">Command Center</h1>
           <p class="text-xs text-[hsl(var(--muted-foreground))] mt-0.5 font-mono">Multi-agent pipeline orchestration</p>
         </div>
-      </div>
-      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[hsl(var(--card))] border border-[hsl(var(--border))]">
-        <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
-        <span class="text-[10px] font-medium tracking-widest text-[hsl(var(--muted-foreground))] uppercase font-mono">PRO</span>
       </div>
     </div>
 

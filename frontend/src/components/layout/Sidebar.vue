@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { 
   LayoutDashboard, 
@@ -12,7 +12,9 @@ import {
   PanelLeftClose,
   PanelLeft,
   Sparkles,
-  BarChart3
+  BarChart3,
+  X,
+  Check
 } from 'lucide-vue-next'
 
 interface Props {
@@ -47,6 +49,8 @@ const isActive = (path: string) => {
 }
 
 const navigate = (path: string) => router.push(path)
+
+const showPlansModal = ref(false)
 </script>
 
 <template>
@@ -118,23 +122,23 @@ const navigate = (path: string) => router.push(path)
     </nav>
 
     <!-- Bottom -->
-    <div class="border-t border-[hsl(var(--border))] p-3 overflow-hidden">
-      <!-- Workspace Sync -->
+    <div class="border-t border-[hsl(var(--border))] p-3 overflow-hidden space-y-3">
+      <!-- Plan Status -->
       <Transition name="fade">
         <div
           v-if="!collapsed"
-          class="mb-3 rounded-xl border border-[#14532d]/80 bg-[#0a1a0d]/60 px-3 py-2.5 space-y-2"
+          class="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--secondary))] px-3 py-2.5 space-y-2"
         >
           <div class="flex items-center justify-between text-xs">
-            <span class="font-semibold text-emerald-400">Workspace Sync</span>
-            <span class="px-1.5 py-0.5 rounded-full bg-[#14532d]/60 text-emerald-500 text-[10px] font-mono font-medium">PRO</span>
-          </div>
-          <div class="h-1.5 w-full rounded-full bg-[hsl(var(--secondary))] overflow-hidden">
-            <div class="h-full w-3/4 rounded-full bg-[#15803d] shadow-[0_0_8px_rgba(20,83,45,0.5)]" />
+            <span class="font-semibold text-[hsl(var(--foreground))]">Your Plan</span>
+            <span class="px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-mono font-medium">PRO</span>
           </div>
           <p class="text-[10px] text-[hsl(var(--muted-foreground))]">
-            Nodes, agents & logs stay in sync across tabs.
+            Unlimited agents & pipelines
           </p>
+          <button @click="showPlansModal = true" class="w-full text-[10px] px-2 py-1.5 rounded-lg bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:opacity-90 transition-opacity cursor-pointer font-medium">
+            View Plan Details
+          </button>
         </div>
       </Transition>
 
@@ -161,6 +165,68 @@ const navigate = (path: string) => router.push(path)
         </Transition>
       </button>
     </div>
+
+    <!-- Plans Modal -->
+    <Teleport to="body">
+      <div v-if="showPlansModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" @click.self="showPlansModal = false">
+        <div class="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl w-full max-w-2xl shadow-xl">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
+            <h2 class="text-lg font-semibold text-[hsl(var(--foreground))]">Available Plans</h2>
+            <button @click="showPlansModal = false" class="p-1 hover:bg-[hsl(var(--secondary))] rounded-lg cursor-pointer">
+              <X class="h-5 w-5" />
+            </button>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Free Tier -->
+              <div class="rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] p-6">
+                <h3 class="text-lg font-bold text-[hsl(var(--foreground))] mb-2">Free</h3>
+                <p class="text-3xl font-bold text-[hsl(var(--foreground))] mb-4">₹0</p>
+                <ul class="space-y-2 mb-6 text-sm text-[hsl(var(--muted-foreground))]">
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> 2 Active Agents</li>
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Basic Analytics</li>
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Community Support</li>
+                </ul>
+                <button class="w-full px-4 py-2 text-sm font-medium rounded-lg border border-[hsl(var(--border))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))] cursor-pointer">
+                  Current Plan
+                </button>
+              </div>
+
+              <!-- Pro Tier (Current) -->
+              <div class="rounded-lg border-2 border-emerald-500/50 bg-[hsl(var(--background))] p-6 relative">
+                <div class="absolute -top-3 left-4 px-2 py-1 bg-emerald-500 text-white text-xs font-medium rounded-full">
+                  Current
+                </div>
+                <h3 class="text-lg font-bold text-[hsl(var(--foreground))] mb-2 mt-2">Pro</h3>
+                <p class="text-3xl font-bold text-[hsl(var(--foreground))] mb-4">₹3,999<span class="text-sm text-[hsl(var(--muted-foreground))]">/mo</span></p>
+                <ul class="space-y-2 mb-6 text-sm text-[hsl(var(--muted-foreground))]">
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Unlimited Agents</li>
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Advanced Analytics</li>
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Priority Support</li>
+                </ul>
+                <button class="w-full px-4 py-2 text-sm font-medium rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 cursor-pointer">
+                  Active Plan
+                </button>
+              </div>
+
+              <!-- Enterprise -->
+              <div class="rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] p-6">
+                <h3 class="text-lg font-bold text-[hsl(var(--foreground))] mb-2">Enterprise</h3>
+                <p class="text-3xl font-bold text-[hsl(var(--foreground))] mb-4">Custom</p>
+                <ul class="space-y-2 mb-6 text-sm text-[hsl(var(--muted-foreground))]">
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Unlimited Everything</li>
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Dedicated Support</li>
+                  <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> SLA Guarantee</li>
+                </ul>
+                <button class="w-full px-4 py-2 text-sm font-medium rounded-lg border border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary)/0.1)] cursor-pointer">
+                  Contact Sales
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </aside>
 </template>
 

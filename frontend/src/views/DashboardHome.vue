@@ -38,6 +38,8 @@ import { useAnalyticsStore } from '@/stores/analytics'
 const showActiveAgentsModal = ref(false)
 const showRunningTasksModal = ref(false)
 const showCompletedTodayModal = ref(false)
+const showCreateAgentModal = ref(false)
+const showRunTaskModal = ref(false)
 
 // Register Chart.js components
 ChartJS.register(
@@ -367,15 +369,15 @@ const getStatusBg = (status: string) => {
     <!-- Quick Actions -->
     <div class="flex flex-wrap gap-3">
       <button
-        @click="router.push('/dashboard/agents')"
-        class="flex items-center gap-2 rounded-lg bg-[hsl(var(--primary))] px-4 py-2.5 text-sm font-medium text-[hsl(var(--primary-foreground))] transition-colors hover:bg-[hsl(var(--primary)/0.9)]"
+        @click="showCreateAgentModal = true"
+        class="flex items-center gap-2 rounded-lg bg-[hsl(var(--primary))] px-4 py-2.5 text-sm font-medium text-[hsl(var(--primary-foreground))] transition-colors hover:bg-[hsl(var(--primary)/0.9)] cursor-pointer"
       >
         <Plus class="h-4 w-4" />
         Create Agent
       </button>
       <button
-        @click="router.push('/dashboard/tasks')"
-        class="flex items-center gap-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-4 py-2.5 text-sm font-medium text-[hsl(var(--foreground))] transition-colors hover:bg-[hsl(var(--secondary))]"
+        @click="showRunTaskModal = true"
+        class="flex items-center gap-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-4 py-2.5 text-sm font-medium text-[hsl(var(--foreground))] transition-colors hover:bg-[hsl(var(--secondary))] cursor-pointer"
       >
         <Play class="h-4 w-4" />
         Run Task
@@ -446,7 +448,7 @@ const getStatusBg = (status: string) => {
           <h2 class="text-lg font-semibold text-[hsl(var(--foreground))]">Recent Activity</h2>
           <button 
             @click="router.push('/dashboard/activity')"
-            class="flex items-center gap-1 text-sm text-[hsl(var(--primary))] hover:underline"
+            class="flex items-center gap-1 text-sm text-[hsl(var(--primary))] hover:underline cursor-pointer"
           >
             View all
             <ArrowUpRight class="h-3 w-3" />
@@ -489,7 +491,7 @@ const getStatusBg = (status: string) => {
           <h2 class="text-lg font-semibold text-[hsl(var(--foreground))]">Top Agents</h2>
           <button 
             @click="router.push('/dashboard/agents')"
-            class="flex items-center gap-1 text-sm text-[hsl(var(--primary))] hover:underline"
+            class="flex items-center gap-1 text-sm text-[hsl(var(--primary))] hover:underline cursor-pointer"
           >
             View all
             <ArrowUpRight class="h-3 w-3" />
@@ -726,6 +728,101 @@ const getStatusBg = (status: string) => {
             <div v-if="completedTasks.length === 0" class="px-6 py-8 text-center">
               <p class="text-[hsl(var(--muted-foreground))]">No tasks completed today yet</p>
             </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Create Agent Modal -->
+    <Teleport to="body">
+      <div 
+        v-if="showCreateAgentModal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+        @click.self="showCreateAgentModal = false"
+      >
+        <div class="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl w-full max-w-lg shadow-xl">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
+            <h2 class="text-lg font-semibold text-[hsl(var(--foreground))]">Create New Agent</h2>
+            <button @click="showCreateAgentModal = false" class="p-1 hover:bg-[hsl(var(--secondary))] rounded-lg">
+              <X class="h-5 w-5" />
+            </button>
+          </div>
+          <div class="p-6 space-y-4">
+            <div>
+              <label class="text-sm font-medium text-[hsl(var(--foreground))]">Agent Name</label>
+              <input type="text" placeholder="e.g., Research Assistant" class="mt-1 w-full px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--foreground))]" />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-sm font-medium text-[hsl(var(--foreground))]">Role</label>
+                <select class="mt-1 w-full px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+                  <option>Researcher</option>
+                  <option>Writer</option>
+                  <option>Analyst</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-[hsl(var(--foreground))]">Personality</label>
+                <select class="mt-1 w-full px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+                  <option>Professional</option>
+                  <option>Creative</option>
+                  <option>Analytical</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-3 px-6 py-4 border-t border-[hsl(var(--border))]">
+            <button @click="showCreateAgentModal = false" class="flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))] cursor-pointer">
+              Cancel
+            </button>
+            <button @click="showCreateAgentModal = false" class="flex-1 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:opacity-90 cursor-pointer">
+              Create Agent
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Run Task Modal -->
+    <Teleport to="body">
+      <div 
+        v-if="showRunTaskModal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+        @click.self="showRunTaskModal = false"
+      >
+        <div class="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl w-full max-w-lg shadow-xl">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
+            <h2 class="text-lg font-semibold text-[hsl(var(--foreground))]">Run Task Simulation</h2>
+            <button @click="showRunTaskModal = false" class="p-1 hover:bg-[hsl(var(--secondary))] rounded-lg">
+              <X class="h-5 w-5" />
+            </button>
+          </div>
+          <div class="p-6 space-y-4">
+            <div>
+              <label class="text-sm font-medium text-[hsl(var(--foreground))]">Task Description</label>
+              <textarea placeholder="Describe your task..." rows="4" class="mt-1 w-full px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--foreground))]"></textarea>
+            </div>
+            <div>
+              <label class="text-sm font-medium text-[hsl(var(--foreground))]">Select Agent/Pipeline</label>
+              <select class="mt-1 w-full px-3 py-2 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+                <option>Research Assistant</option>
+                <option>Content Writer</option>
+                <option>Data Analyzer</option>
+              </select>
+            </div>
+            <div class="p-4 rounded-lg bg-[hsl(var(--secondary))] text-[hsl(var(--muted-foreground))] text-sm">
+              <p class="font-medium">Simulation Mode</p>
+              <p class="text-xs mt-1">This will run a simulated task execution to test your agents</p>
+            </div>
+          </div>
+          <div class="flex gap-3 px-6 py-4 border-t border-[hsl(var(--border))]">
+            <button @click="showRunTaskModal = false" class="flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))] cursor-pointer">
+              Cancel
+            </button>
+            <button @click="showRunTaskModal = false" class="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center justify-center gap-2 cursor-pointer">
+              <Play class="h-4 w-4" />
+              Simulate Task
+            </button>
           </div>
         </div>
       </div>

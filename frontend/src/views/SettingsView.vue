@@ -12,7 +12,8 @@ import {
   EyeOff,
   Plus,
   Trash2,
-  Check
+  Check,
+  X
 } from 'lucide-vue-next'
 
 const activeTab = ref('profile')
@@ -62,6 +63,9 @@ const teamMembers = ref([
 
 const isSaving = ref(false)
 const showSavedMessage = ref(false)
+const showManageBillingModal = ref(false)
+const showUpgradeModal = ref(false)
+const showPlansModal = ref(false)
 
 const toggleKeyVisibility = (key: typeof apiKeys.value[0]) => {
   key.isVisible = !key.isVisible
@@ -113,7 +117,7 @@ const saveSettings = async () => {
             :key="tab.id"
             @click="activeTab = tab.id"
             :class="[
-              'flex items-center gap-3 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-colors',
+              'flex items-center gap-3 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer',
               activeTab === tab.id
                 ? 'bg-[hsl(var(--primary)/0.15)] text-[hsl(var(--primary))]'
                 : 'text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--secondary))] hover:text-[hsl(var(--foreground))]'
@@ -128,49 +132,71 @@ const saveSettings = async () => {
       <!-- Content -->
       <div class="flex-1 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
         <!-- Profile -->
-        <div v-if="activeTab === 'profile'" class="p-6">
-          <h3 class="text-lg font-semibold text-[hsl(var(--foreground))]">Profile Information</h3>
-          <p class="mt-1 text-sm text-[hsl(var(--muted-foreground))]">Update your personal details</p>
-          
-          <div class="mt-6 space-y-4">
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div class="space-y-2">
-                <label class="text-sm font-medium text-[hsl(var(--foreground))]">Full Name</label>
-                <input
-                  v-model="profile.name"
-                  type="text"
-                  class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
-                />
-              </div>
-              <div class="space-y-2">
-                <label class="text-sm font-medium text-[hsl(var(--foreground))]">Email</label>
-                <input
-                  v-model="profile.email"
-                  type="email"
-                  class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
-                />
-              </div>
-              <div class="space-y-2">
-                <label class="text-sm font-medium text-[hsl(var(--foreground))]">Company</label>
-                <input
-                  v-model="profile.company"
-                  type="text"
-                  class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
-                />
-              </div>
-              <div class="space-y-2">
-                <label class="text-sm font-medium text-[hsl(var(--foreground))]">Timezone</label>
-                <select
-                  v-model="profile.timezone"
-                  class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
-                >
-                  <option value="UTC-8">Pacific Time (UTC-8)</option>
-                  <option value="UTC-5">Eastern Time (UTC-5)</option>
-                  <option value="UTC+0">UTC</option>
-                  <option value="UTC+1">Central European (UTC+1)</option>
-                </select>
+        <div v-if="activeTab === 'profile'" class="p-6 flex flex-col">
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-[hsl(var(--foreground))]">Profile Information</h3>
+            <p class="mt-1 text-sm text-[hsl(var(--muted-foreground))]">Update your personal details</p>
+            
+            <div class="mt-6 space-y-4">
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-[hsl(var(--foreground))]">Full Name</label>
+                  <input
+                    v-model="profile.name"
+                    type="text"
+                    class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-[hsl(var(--foreground))]">Email</label>
+                  <input
+                    v-model="profile.email"
+                    type="email"
+                    class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-[hsl(var(--foreground))]">Company</label>
+                  <input
+                    v-model="profile.company"
+                    type="text"
+                    class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-[hsl(var(--foreground))]">Timezone</label>
+                  <select
+                    v-model="profile.timezone"
+                    class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
+                  >
+                    <option value="UTC-8">Pacific Time (UTC-8)</option>
+                    <option value="UTC-5">Eastern Time (UTC-5)</option>
+                    <option value="UTC+0">UTC</option>
+                    <option value="UTC+1">Central European (UTC+1)</option>
+                  </select>
+                </div>
               </div>
             </div>
+          </div>
+          <!-- Save Button - Only in Profile -->
+          <div class="flex items-center justify-between border-t border-[hsl(var(--border))] pt-4 mt-6">
+            <div
+              v-if="showSavedMessage"
+              class="flex items-center gap-2 text-sm text-[hsl(var(--success))]"
+            >
+              <Check class="h-4 w-4" />
+              Profile saved successfully
+            </div>
+            <div v-else></div>
+            <button
+              @click="saveSettings"
+              :disabled="isSaving"
+              class="flex items-center gap-2 rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary)/0.9)] disabled:opacity-50 cursor-pointer"
+            >
+              <Save v-if="!isSaving" class="h-4 w-4" />
+              <div v-else class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+              {{ isSaving ? 'Saving...' : 'Save Changes' }}
+            </button>
           </div>
         </div>
 
@@ -183,10 +209,10 @@ const saveSettings = async () => {
             </div>
             <button
               @click="showAddKey = true"
-              class="flex items-center gap-2 rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))]"
+              class="flex items-center gap-2 rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] hover:opacity-90 transition-opacity cursor-pointer"
             >
               <Plus class="h-4 w-4" />
-              Add Key
+              Add API Key
             </button>
           </div>
 
@@ -215,13 +241,13 @@ const saveSettings = async () => {
             <div class="mt-4 flex justify-end gap-2">
               <button
                 @click="showAddKey = false"
-                class="rounded-lg border border-[hsl(var(--border))] px-4 py-2 text-sm font-medium text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))]"
+                class="rounded-lg border border-[hsl(var(--border))] px-4 py-2 text-sm font-medium text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 @click="addApiKey"
-                class="rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))]"
+                class="rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] cursor-pointer hover:opacity-90"
               >
                 Add Key
               </button>
@@ -250,14 +276,14 @@ const saveSettings = async () => {
                 <span class="text-xs text-[hsl(var(--muted-foreground))]">Last used: {{ key.lastUsed }}</span>
                 <button
                   @click="toggleKeyVisibility(key)"
-                  class="rounded-lg p-2 text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--secondary))]"
+                  class="rounded-lg p-2 text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--secondary))] cursor-pointer"
                 >
                   <EyeOff v-if="key.isVisible" class="h-4 w-4" />
                   <Eye v-else class="h-4 w-4" />
                 </button>
                 <button
                   @click="deleteApiKey(key.id)"
-                  class="rounded-lg p-2 text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--destructive)/0.15)] hover:text-[hsl(var(--destructive))]"
+                  class="rounded-lg p-2 text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--destructive)/0.15)] hover:text-[hsl(var(--destructive))] cursor-pointer"
                 >
                   <Trash2 class="h-4 w-4" />
                 </button>
@@ -271,86 +297,86 @@ const saveSettings = async () => {
           <h3 class="text-lg font-semibold text-[hsl(var(--foreground))]">Notification Preferences</h3>
           <p class="mt-1 text-sm text-[hsl(var(--muted-foreground))]">Choose how you want to be notified</p>
 
-          <div class="mt-6 space-y-4">
-            <div class="flex items-center justify-between py-3 border-b border-[hsl(var(--border))]">
-              <div>
+          <div class="mt-6 space-y-0">
+            <div class="flex items-center justify-between px-0 py-4 border-b border-[hsl(var(--border))]">
+              <div class="flex-1">
                 <p class="font-medium text-[hsl(var(--foreground))]">Task Completed</p>
                 <p class="text-sm text-[hsl(var(--muted-foreground))]">Get notified when a task finishes</p>
               </div>
               <button
                 @click="notifications.taskComplete = !notifications.taskComplete"
                 :class="[
-                  'relative h-6 w-11 rounded-full transition-colors',
-                  notifications.taskComplete ? 'bg-[hsl(var(--primary))]' : 'bg-[hsl(var(--muted))]'
+                  'relative inline-flex h-7 w-14 flex-shrink-0 rounded-full transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2',
+                  notifications.taskComplete ? 'bg-emerald-500' : 'bg-[hsl(var(--muted))]'
                 ]"
               >
                 <span
                   :class="[
-                    'absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform',
-                    notifications.taskComplete ? 'left-[22px]' : 'left-0.5'
+                    'pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    notifications.taskComplete ? 'translate-x-7' : 'translate-x-0.5'
                   ]"
                 ></span>
               </button>
             </div>
 
-            <div class="flex items-center justify-between py-3 border-b border-[hsl(var(--border))]">
-              <div>
+            <div class="flex items-center justify-between px-0 py-4 border-b border-[hsl(var(--border))]">
+              <div class="flex-1">
                 <p class="font-medium text-[hsl(var(--foreground))]">Task Failed</p>
                 <p class="text-sm text-[hsl(var(--muted-foreground))]">Get notified when a task fails</p>
               </div>
               <button
                 @click="notifications.taskFailed = !notifications.taskFailed"
                 :class="[
-                  'relative h-6 w-11 rounded-full transition-colors',
-                  notifications.taskFailed ? 'bg-[hsl(var(--primary))]' : 'bg-[hsl(var(--muted))]'
+                  'relative inline-flex h-7 w-14 flex-shrink-0 rounded-full transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2',
+                  notifications.taskFailed ? 'bg-emerald-500' : 'bg-[hsl(var(--muted))]'
                 ]"
               >
                 <span
                   :class="[
-                    'absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform',
-                    notifications.taskFailed ? 'left-[22px]' : 'left-0.5'
+                    'pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    notifications.taskFailed ? 'translate-x-7' : 'translate-x-0.5'
                   ]"
                 ></span>
               </button>
             </div>
 
-            <div class="flex items-center justify-between py-3 border-b border-[hsl(var(--border))]">
-              <div>
+            <div class="flex items-center justify-between px-0 py-4 border-b border-[hsl(var(--border))]">
+              <div class="flex-1">
                 <p class="font-medium text-[hsl(var(--foreground))]">Weekly Report</p>
                 <p class="text-sm text-[hsl(var(--muted-foreground))]">Receive weekly usage summary</p>
               </div>
               <button
                 @click="notifications.weeklyReport = !notifications.weeklyReport"
                 :class="[
-                  'relative h-6 w-11 rounded-full transition-colors',
-                  notifications.weeklyReport ? 'bg-[hsl(var(--primary))]' : 'bg-[hsl(var(--muted))]'
+                  'relative inline-flex h-7 w-14 flex-shrink-0 rounded-full transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2',
+                  notifications.weeklyReport ? 'bg-emerald-500' : 'bg-[hsl(var(--muted))]'
                 ]"
               >
                 <span
                   :class="[
-                    'absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform',
-                    notifications.weeklyReport ? 'left-[22px]' : 'left-0.5'
+                    'pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    notifications.weeklyReport ? 'translate-x-7' : 'translate-x-0.5'
                   ]"
                 ></span>
               </button>
             </div>
 
-            <div class="flex items-center justify-between py-3">
-              <div>
+            <div class="flex items-center justify-between px-0 py-4">
+              <div class="flex-1">
                 <p class="font-medium text-[hsl(var(--foreground))]">New Features</p>
                 <p class="text-sm text-[hsl(var(--muted-foreground))]">Get updates about new features</p>
               </div>
               <button
                 @click="notifications.newFeatures = !notifications.newFeatures"
                 :class="[
-                  'relative h-6 w-11 rounded-full transition-colors',
-                  notifications.newFeatures ? 'bg-[hsl(var(--primary))]' : 'bg-[hsl(var(--muted))]'
+                  'relative inline-flex h-7 w-14 flex-shrink-0 rounded-full transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2',
+                  notifications.newFeatures ? 'bg-emerald-500' : 'bg-[hsl(var(--muted))]'
                 ]"
               >
                 <span
                   :class="[
-                    'absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform',
-                    notifications.newFeatures ? 'left-[22px]' : 'left-0.5'
+                    'pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                    notifications.newFeatures ? 'translate-x-7' : 'translate-x-0.5'
                   ]"
                 ></span>
               </button>
@@ -382,7 +408,7 @@ const saveSettings = async () => {
                   placeholder="Confirm new password"
                   class="h-10 w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-3 text-[hsl(var(--foreground))] focus:border-[hsl(var(--primary))] focus:outline-none"
                 />
-                <button class="rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))]">
+                <button class="rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] cursor-pointer hover:opacity-90">
                   Update Password
                 </button>
               </div>
@@ -394,7 +420,7 @@ const saveSettings = async () => {
                   <h4 class="font-medium text-[hsl(var(--foreground))]">Two-Factor Authentication</h4>
                   <p class="text-sm text-[hsl(var(--muted-foreground))]">Add an extra layer of security</p>
                 </div>
-                <button class="rounded-lg border border-[hsl(var(--border))] px-4 py-2 text-sm font-medium text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))]">
+                <button class="rounded-lg border border-[hsl(var(--border))] px-4 py-2 text-sm font-medium text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary))] cursor-pointer">
                   Enable 2FA
                 </button>
               </div>
@@ -409,7 +435,7 @@ const saveSettings = async () => {
               <h3 class="text-lg font-semibold text-[hsl(var(--foreground))]">Team Members</h3>
               <p class="mt-1 text-sm text-[hsl(var(--muted-foreground))]">Manage your workspace team</p>
             </div>
-            <button class="flex items-center gap-2 rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))]">
+            <button class="flex items-center gap-2 rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] cursor-pointer hover:opacity-90">
               <Plus class="h-4 w-4" />
               Invite Member
             </button>
@@ -450,73 +476,149 @@ const saveSettings = async () => {
           </div>
         </div>
 
-        <!-- Billing -->
+        <!-- Billing & Subscription -->
         <div v-if="activeTab === 'billing'" class="p-6">
           <h3 class="text-lg font-semibold text-[hsl(var(--foreground))]">Billing & Subscription</h3>
-          <p class="mt-1 text-sm text-[hsl(var(--muted-foreground))]">Manage your subscription and payment</p>
+          <p class="mt-1 text-sm text-[hsl(var(--muted-foreground))]">Manage your subscription and payment methods</p>
 
-          <div class="mt-6 rounded-lg border border-zinc-800 bg-zinc-900/50 p-6">
+          <!-- Current Plan -->
+          <div class="mt-6 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] p-6">
             <div class="flex items-center justify-between mb-4">
               <div>
-                <h3 class="text-lg font-bold text-white">Pro Plan</h3>
-                <p class="text-sm text-zinc-400">Unlimited AI Orchestration</p>
+                <h3 class="text-lg font-bold text-[hsl(var(--foreground))]">Pro Plan</h3>
+                <p class="text-sm text-[hsl(var(--muted-foreground))]">Unlimited AI Orchestration</p>
               </div>
-              <span
-                class="px-3 py-1 text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full"
-              >
+              <span class="px-3 py-1 text-xs font-mono bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] border border-[hsl(var(--success)/0.3)] rounded-full">
                 ACTIVE
               </span>
             </div>
 
             <div class="mb-6">
-              <span class="text-4xl font-bold text-white">₹3,999</span>
-              <span class="text-zinc-500 ml-2">/ month</span>
+              <span class="text-4xl font-bold text-[hsl(var(--foreground))]">₹3,999</span>
+              <span class="text-[hsl(var(--muted-foreground))] ml-2">/ month</span>
             </div>
 
             <ul class="space-y-3 mb-6">
-              <li class="flex items-center text-sm text-zinc-300">
-                <Check class="w-4 h-4 mr-2 text-emerald-500" /> Infinite Node Workflows
+              <li class="flex items-center text-sm text-[hsl(var(--foreground))]">
+                <Check class="w-4 h-4 mr-2 text-[hsl(var(--success))]" /> Unlimited Agents & Pipelines
               </li>
-              <li class="flex items-center text-sm text-zinc-300">
-                <Check class="w-4 h-4 mr-2 text-emerald-500" /> Priority Agent Execution
+              <li class="flex items-center text-sm text-[hsl(var(--foreground))]">
+                <Check class="w-4 h-4 mr-2 text-[hsl(var(--success))]" /> Priority Execution Queue
               </li>
-              <li class="flex items-center text-sm text-zinc-300">
-                <Check class="w-4 h-4 mr-2 text-emerald-500" /> 24/7 System Monitoring
+              <li class="flex items-center text-sm text-[hsl(var(--foreground))]">
+                <Check class="w-4 h-4 mr-2 text-[hsl(var(--success))]" /> Advanced Analytics
+              </li>
+              <li class="flex items-center text-sm text-[hsl(var(--foreground))]">
+                <Check class="w-4 h-4 mr-2 text-[hsl(var(--success))]" /> 24/7 Support
               </li>
             </ul>
 
-            <div class="flex items-center justify-between text-xs text-zinc-500">
-              <span>Billing in INR • Taxes may apply</span>
-              <button
-                class="rounded-lg border border-zinc-800 px-3 py-1 font-medium text-zinc-200 hover:bg-zinc-800 transition-colors"
-              >
-                Manage Plan
+            <div class="space-y-2 mb-4 pb-4 border-b border-[hsl(var(--border))]">
+              <div class="text-xs text-[hsl(var(--muted-foreground))]">Next billing date: April 15, 2026</div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button @click="showManageBillingModal = true" class="px-4 py-2 rounded-lg bg-[hsl(var(--secondary))] border border-[hsl(var(--border))] text-sm font-medium text-[hsl(var(--foreground))] hover:bg-[hsl(var(--secondary)/0.8)] transition-colors cursor-pointer">
+                Manage Billing
+              </button>
+              <button @click="showUpgradeModal = true" class="px-4 py-2 rounded-lg bg-[hsl(var(--primary))] border border-[hsl(var(--primary))] text-sm font-medium text-[hsl(var(--primary-foreground))] hover:opacity-90 transition-colors cursor-pointer">
+                Upgrade to Enterprise
               </button>
             </div>
           </div>
-        </div>
 
-        <!-- Save Button -->
-        <div class="flex items-center justify-between border-t border-[hsl(var(--border))] px-6 py-4">
-          <div
-            v-if="showSavedMessage"
-            class="flex items-center gap-2 text-sm text-[hsl(var(--success))]"
-          >
-            <Check class="h-4 w-4" />
-            Settings saved successfully
+          <!-- Upgrade Options -->
+          <div class="mt-6">
+            <h4 class="text-base font-semibold text-[hsl(var(--foreground))] mb-4">Other Plans</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Free Tier -->
+              <div class="rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4">
+                <h5 class="font-medium text-[hsl(var(--foreground))] mb-2">Free Tier</h5>
+                <p class="text-2xl font-bold text-[hsl(var(--foreground))] mb-3">₹0<span class="text-sm text-[hsl(var(--muted-foreground))]">/month</span></p>
+                <ul class="text-xs text-[hsl(var(--muted-foreground))] space-y-1 mb-4">
+                  <li>✓ 2 Active Agents</li>
+                  <li>✓ Basic Analytics</li>
+                  <li>✓ Community Support</li>
+                </ul>
+              </div>
+              <!-- Enterprise -->
+              <div class="rounded-lg border border-[hsl(var(--primary)/0.3)] bg-[hsl(var(--card))] p-4">
+                <h5 class="font-medium text-[hsl(var(--foreground))] mb-2">Enterprise</h5>
+                <p class="text-2xl font-bold text-[hsl(var(--foreground))] mb-3">Custom<span class="text-sm text-[hsl(var(--muted-foreground))]"> pricing</span></p>
+                <ul class="text-xs text-[hsl(var(--muted-foreground))] space-y-1 mb-4">
+                  <li>✓ Unlimited Everything</li>
+                  <li>✓ Dedicated Support</li>
+                  <li>✓ SLA Guarantee</li>
+                </ul>
+                <button class="w-full px-3 py-2 text-xs font-medium rounded-lg bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:opacity-90 transition-opacity cursor-pointer">
+                  Contact Sales
+                </button>
+              </div>
+            </div>
           </div>
-          <div v-else></div>
-          <button
-            @click="saveSettings"
-            :disabled="isSaving"
-            class="flex items-center gap-2 rounded-lg bg-[hsl(var(--primary))] px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary)/0.9)] disabled:opacity-50"
-          >
-            <Save v-if="!isSaving" class="h-4 w-4" />
-            <div v-else class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-            {{ isSaving ? 'Saving...' : 'Save Changes' }}
-          </button>
         </div>
       </div>
     </div>
+
+    <!-- Manage Billing Modal -->
+    <Teleport to="body">
+      <div v-if="showManageBillingModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" @click.self="showManageBillingModal = false">
+        <div class="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl w-full max-w-md shadow-xl">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
+            <h2 class="text-lg font-semibold text-[hsl(var(--foreground))]">Manage Billing</h2>
+            <button @click="showManageBillingModal = false" class="p-1 hover:bg-[hsl(var(--secondary))] rounded-lg cursor-pointer">
+              <X class="h-5 w-5" />
+            </button>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="rounded-lg bg-[hsl(var(--secondary))] p-4">
+              <h3 class="font-medium text-[hsl(var(--foreground))] mb-2">Billing Information</h3>
+              <div class="space-y-2 text-sm text-[hsl(var(--muted-foreground))]">
+                <p>Current Plan: <span class="font-semibold text-[hsl(var(--foreground))]">Pro</span></p>
+                <p>Monthly Cost: <span class="font-semibold text-[hsl(var(--foreground))]">₹3,999</span></p>
+                <p>Next Billing: <span class="font-semibold text-[hsl(var(--foreground))]">April 15, 2026</span></p>
+              </div>
+            </div>
+            <button class="w-full px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg text-sm font-medium hover:opacity-90 cursor-pointer">
+              Open Billing Portal
+            </button>
+            <button @click="showManageBillingModal = false" class="w-full px-4 py-2 border border-[hsl(var(--border))] text-[hsl(var(--foreground))] rounded-lg text-sm font-medium hover:bg-[hsl(var(--secondary))] cursor-pointer">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Upgrade to Enterprise Modal -->
+    <Teleport to="body">
+      <div v-if="showUpgradeModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" @click.self="showUpgradeModal = false">
+        <div class="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl w-full max-w-md shadow-xl">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
+            <h2 class="text-lg font-semibold text-[hsl(var(--foreground))]">Upgrade to Enterprise</h2>
+            <button @click="showUpgradeModal = false" class="p-1 hover:bg-[hsl(var(--secondary))] rounded-lg cursor-pointer">
+              <X class="h-5 w-5" />
+            </button>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="rounded-lg bg-[hsl(var(--secondary))] p-4">
+              <h3 class="font-medium text-[hsl(var(--foreground))] mb-3">Enterprise Features</h3>
+              <ul class="space-y-2 text-sm text-[hsl(var(--muted-foreground))]">
+                <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Unlimited Everything</li>
+                <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Dedicated Account Manager</li>
+                <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> Custom Integrations</li>
+                <li class="flex items-center gap-2"><Check class="h-4 w-4 text-emerald-500" /> SLA Guarantee</li>
+              </ul>
+            </div>
+            <button class="w-full px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg text-sm font-medium hover:opacity-90 cursor-pointer">
+              Contact Sales Team
+            </button>
+            <button @click="showUpgradeModal = false" class="w-full px-4 py-2 border border-[hsl(var(--border))] text-[hsl(var(--foreground))] rounded-lg text-sm font-medium hover:bg-[hsl(var(--secondary))] cursor-pointer">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>

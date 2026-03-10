@@ -11,7 +11,7 @@
         <!-- Pipeline Selector -->
         <select
           v-model="selectedPipelineId"
-          class="px-3 py-1.5 bg-[hsl(var(--background))] border border-[hsl(var(--border))] rounded-lg text-sm font-mono text-[hsl(var(--foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
+          class="px-4 py-2 bg-[hsl(var(--background))] border border-[hsl(var(--border))] rounded-lg text-sm font-mono text-[hsl(var(--foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] hover:border-[hsl(var(--primary)/0.5)] cursor-pointer"
         >
           <option v-for="p in pipelines" :key="p.id" :value="p.id">
             {{ p.name }}
@@ -22,14 +22,14 @@
       <div class="flex items-center gap-2">
         <button
           @click="openAddNodeModal"
-          class="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary)/0.8)] rounded-lg text-sm font-medium text-[hsl(var(--foreground))] transition-colors"
+          class="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary)/0.8)] rounded-lg text-sm font-medium text-[hsl(var(--foreground))] transition-colors cursor-pointer"
         >
           <Plus class="w-4 h-4" />
           Add Node
         </button>
         <button
           @click="runPipeline"
-          class="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors"
+          class="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer"
         >
           <Play class="w-4 h-4" />
           Run Pipeline
@@ -124,26 +124,35 @@
         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-[hsl(var(--card))] backdrop-blur-sm border border-[hsl(var(--border))] rounded-lg shadow-lg">
           <button
             @click="handleFitView"
-            class="p-2 hover:bg-[hsl(var(--secondary))] rounded-lg transition-colors"
+            class="p-2 hover:bg-[hsl(var(--secondary))] rounded-lg transition-colors cursor-pointer group"
             title="Fit View"
           >
-            <Maximize2 class="w-4 h-4 text-[hsl(var(--muted-foreground))]" />
+            <Maximize2 class="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
           </button>
           <div class="w-px h-6 bg-[hsl(var(--border))]" />
           <button
             @click="handleZoomIn"
-            class="p-2 hover:bg-[hsl(var(--secondary))] rounded-lg transition-colors"
+            class="p-2 hover:bg-[hsl(var(--secondary))] rounded-lg transition-colors cursor-pointer group"
           >
-            <ZoomIn class="w-4 h-4 text-[hsl(var(--muted-foreground))]" />
+            <ZoomIn class="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
           </button>
-          <span class="text-xs font-mono text-[hsl(var(--muted-foreground))] px-2 min-w-[50px] text-center">
+          <span class="text-xs font-mono text-white px-2 min-w-[50px] text-center">
             {{ zoomLevel }}%
           </span>
           <button
             @click="handleZoomOut"
-            class="p-2 hover:bg-[hsl(var(--secondary))] rounded-lg transition-colors"
+            class="p-2 hover:bg-[hsl(var(--secondary))] rounded-lg transition-colors cursor-pointer group"
           >
-            <ZoomOut class="w-4 h-4 text-[hsl(var(--muted-foreground))]" />
+            <ZoomOut class="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
+          </button>
+          <div class="w-px h-6 bg-[hsl(var(--border))]" />
+          <button
+            @click="toggleFullscreen"
+            class="p-2 hover:bg-[hsl(var(--secondary))] rounded-lg transition-colors cursor-pointer group"
+            title="Toggle Fullscreen"
+          >
+            <Lock v-if="isLocked" class="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
+            <Unlock v-else class="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
           </button>
         </div>
       </div>
@@ -275,7 +284,7 @@ import { useToastStore } from '@/stores/toast'
 import { useGlobalContextStore } from '@/stores/globalContext'
 
 import { 
-  Plus, Play, X, Trash2, Maximize2, ZoomIn, ZoomOut,
+  Plus, Play, X, Trash2, Maximize2, ZoomIn, ZoomOut, Lock, Unlock,
   Bot, Wrench, GitFork, Flag
 } from 'lucide-vue-next'
 
@@ -305,6 +314,7 @@ const nodeDescription = ref('')
 const showAddNodeModal = ref(false)
 const newNodeType = ref('llm-agent')
 const newNodeLabel = ref('')
+const isLocked = ref(false)
 
 // Flow data
 const nodes = ref<FlowNode[]>([])
@@ -566,6 +576,11 @@ function handleZoomIn() {
 
 function handleZoomOut() {
   zoomOut()
+}
+
+// Toggle fullscreen/lock
+function toggleFullscreen() {
+  isLocked.value = !isLocked.value
 }
 
 // Run pipeline
